@@ -6,6 +6,8 @@ export const TREASURY_ADDRESS = '0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A' as 
 export const BASE_CHAIN_ID = 8453;
 export const BASE_RPC_URL = 'https://mainnet.base.org';
 export const BASESCAN_URL = 'https://basescan.org';
+export const VERIFIED_CONTRACT_URL = `${BASESCAN_URL}/address/${ESCROW_ADDRESS}#code`;
+export const SOURCIFY_CONTRACT_URL = `https://sourcify.dev/server/v2/contract/${BASE_CHAIN_ID}/${ESCROW_ADDRESS}?fields=all`;
 
 const productComponents = [
   { name: 'seller', type: 'address' },

@@ -382,7 +382,7 @@ Before requesting a signature, a bot should say in plain language:
 
 ```text
 Network: Base Mainnet
-Contract: 0xb578...990B
+Contract: 0x642da3859deD225Cf42efd21346e317e8e26F58e
 Function: confirmPickup
 Order: #42
 Your detected role: seller
