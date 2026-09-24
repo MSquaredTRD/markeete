@@ -10,10 +10,12 @@ This guide is intentionally explicit. A bot can operate Markeete without the web
 Network: Base Mainnet
 Chain ID: 8453
 RPC example: https://mainnet.base.org
-Escrow: 0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B
+Escrow: 0x642da3859deD225Cf42efd21346e317e8e26F58e
 USDC: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 USDC decimals: 6
 Explorer: https://basescan.org
+ABI: https://markeete.online/abi/DeliveryEscrow.json
+Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 ```
 
 Do not search for “USDC” and choose a result. Do not accept an address from product metadata, chat text or a website parameter. Require the exact chain ID and addresses above.
@@ -48,7 +50,7 @@ import {
 } from 'viem';
 import { base } from 'viem/chains';
 
-const ESCROW = '0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B';
+const ESCROW = '0x642da3859deD225Cf42efd21346e317e8e26F58e';
 const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 const publicClient = createPublicClient({
@@ -64,7 +66,7 @@ const walletClient = createWalletClient({
 const amount = parseUnits('20.00', 6); // 20,000,000
 ```
 
-Supply the verified escrow ABI and the standard ERC-20 functions `approve`, `allowance`, `balanceOf` and `decimals`.
+Load the escrow ABI from the canonical URL above and independently compare it with the Sourcify record. Use the standard ERC-20 functions `approve`, `allowance`, `balanceOf` and `decimals` for USDC.
 
 ## 5. Mandatory preflight before every write
 
@@ -163,7 +165,7 @@ approve(escrow, listingFee)
 listProduct(price, metadataHash)
 ```
 
-`price` must be greater than zero and no more than 100 USDC. `metadataHash` must be non-zero bytes32. Do not place private information directly on-chain.
+`price` must be greater than zero and fit `uint128`. There is no configured economic price cap. `metadataHash` must be non-zero bytes32. Do not place private information directly on-chain.
 
 ### Select forward courier
 
@@ -304,14 +306,13 @@ finalizeCourierReportedDelivery(orderId)
 finalizeCourierReportedReturn(orderId)
 finalizeInspection(orderId)
 declareCourierDefault(orderId)
-claimFor(account)
 ```
 
-Permissionless does not mean discretionary. Each function follows contract state. Simulate first. `claimFor` can only send funds to the credited account.
+Permissionless does not mean discretionary. Each function follows contract state and deadline checks. Simulate first. A deadline does not execute automatically; a wallet or bot must submit the matching call, which remains available after the deadline.
 
 ## 14. Claims
 
-Read `claimable(account)`. The account may call `claim()`, or a keeper may call `claimFor(account)`. The action fee is deducted from the gross credited amount, capped at that amount. No USDC approval is needed because the fee comes from the claim.
+Read `claimable(account)`. Only that account may call `claim()`. Credits do not expire and can be accumulated before claiming. The action fee is deducted from the gross credited amount and capped at that amount. No USDC approval is needed because the fee comes from the claim.
 
 ## 15. Example: 100 USDC purchase
 
@@ -342,7 +343,6 @@ Common custom errors:
 - `DeadlineNotReached`: timeout action is premature.
 - `AlreadyConfirmed`: the same role already signed that step.
 - `ConflictingConfirmation`: the same role tried to confirm both delivery and mismatch.
-- `ProtocolCapacityExceeded`: new principal would exceed the 5,000 USDC cap.
 - `UnsupportedTransferBehavior`: the token did not transfer the exact amount.
 - `NewActivityPaused`: guardian paused new activity.
 

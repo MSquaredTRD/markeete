@@ -4,7 +4,7 @@ Version 1.0 — 25 September 2026
 
 ## 1. Summary
 
-Markeete is an immutable, non-custodial USDC escrow for a buyer, seller and optional courier. It runs on Base Mainnet. The contract holds funds during a deterministic delivery workflow, records wallet confirmations, applies deadlines, and credits settlement balances that participants claim later.
+Markeete is an immutable, non-custodial USDC escrow for a buyer, seller and courier. It runs on Base Mainnet. The contract holds funds during a deterministic delivery workflow, records wallet confirmations, applies deadlines, and credits settlement balances that participants claim later.
 
 The protocol does not observe the physical world. It cannot inspect a product, identify a human or prove delivery. It converts signed transactions from assigned wallet roles and the passage of blockchain time into deterministic settlement outcomes.
 
@@ -12,13 +12,16 @@ The protocol does not observe the physical world. It cannot inspect a product, i
 
 - Network: Base Mainnet
 - Chain ID: `8453`
-- DeliveryEscrow: `0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B`
+- DeliveryEscrow V2: `0x642da3859deD225Cf42efd21346e317e8e26F58e`
 - Native USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
 - Treasury: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
 - Guardian: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
-- Explorer: https://basescan.org/address/0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B
+- Explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
+- Public ABI: https://markeete.online/abi/DeliveryEscrow.json
+- Sourcify: exact creation and runtime bytecode match, verified 25 September 2026
+- Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 
-Addresses are part of the security model. A contract with the same name at another address is not this deployment.
+Addresses are part of the security model. A contract with the same name at another address is not this deployment. Sourcify and BaseScan verification are independent systems.
 
 ## 3. Fixed mainnet parameters
 
@@ -26,8 +29,8 @@ Addresses are part of the security model. A contract with the same name at anoth
 - Purchase fee: `1.00 USDC`
 - Action fee: `0.20 USDC`
 - Courier-offer fee: `0.05 USDC`
-- Maximum product price: `100 USDC`
-- Maximum aggregate contract liability: `5,000 USDC`
+- Configured product-price cap: none
+- Configured aggregate-liability cap: none
 - Courier bond: product price plus `15%`
 - Inspection period after delivery: `3 days`
 - Buyer-absent grace period: `1 day`
@@ -127,15 +130,15 @@ The contract does not find the package or punish a human. It only distributes fu
 
 ## 11. Pull payments
 
-Settlement uses credits rather than sending USDC inside complex state transitions. `claimable(address)` is public. The credited wallet may call `claim()`. Anyone may call `claimFor(address)`, but funds still go only to the credited address.
+Settlement uses credits rather than sending USDC inside complex state transitions. `claimable(address)` is public. Only the credited wallet may call `claim()`. Credits do not expire and may be accumulated before claiming.
 
-The action fee is deducted from the gross claim, capped at the claim amount. This prevents a third party from redirecting funds while allowing keepers to free abandoned liabilities.
+The action fee is deducted from the gross claim and capped at that claim amount. No third party can force an account to claim early or repeatedly charge it on small credits.
 
 ## 12. Accounting and token checks
 
 The constructor requires a six-decimal token. The mainnet deployment script pins the official Base native USDC address. Every incoming transfer measures the contract balance before and after and reverts unless the exact amount arrived, rejecting fee-on-transfer behavior.
 
-`accountingInvariantHolds()` reports whether contract USDC balance is at least liabilities plus accrued fees. A global liability cap limits the amount of participant principal the initial deployment can hold.
+`accountingInvariantHolds()` reports whether contract USDC balance is at least liabilities plus accrued fees. There is no configured value cap; exact-transfer accounting and this solvency invariant apply at every scale.
 
 ## 13. Immutability and administrator limits
 

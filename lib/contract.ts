@@ -1,6 +1,6 @@
 import type { Abi, Address } from 'viem';
 
-export const ESCROW_ADDRESS = '0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B' as Address;
+export const ESCROW_ADDRESS = '0x642da3859deD225Cf42efd21346e317e8e26F58e' as Address;
 export const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address;
 export const TREASURY_ADDRESS = '0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A' as Address;
 export const BASE_CHAIN_ID = 8453;
@@ -69,7 +69,6 @@ export const escrowAbi = [
   fn('actionFee', 'view', [], [{ name: '', type: 'uint128' }]),
   fn('accruedFees', 'view', [], [{ name: '', type: 'uint256' }]),
   fn('totalLiability', 'view', [], [{ name: '', type: 'uint256' }]),
-  fn('maxTotalLiability', 'view', [], [{ name: '', type: 'uint256' }]),
   fn('newActivityPaused', 'view', [], [{ name: '', type: 'bool' }]),
   fn('accountingInvariantHolds', 'view', [], [{ name: '', type: 'bool' }]),
   fn('claimable', 'view', [{ name: 'account', type: 'address' }], [{ name: 'amount', type: 'uint256' }]),
@@ -103,7 +102,6 @@ export const escrowAbi = [
   fn('expireUnmatchedReturn', 'nonpayable', [{ name: 'orderId', type: 'uint256' }]),
   fn('declareCourierDefault', 'nonpayable', [{ name: 'orderId', type: 'uint256' }]),
   fn('claim', 'nonpayable', [], [{ name: 'netAmount', type: 'uint256' }]),
-  fn('claimFor', 'nonpayable', [{ name: 'account', type: 'address' }], [{ name: 'netAmount', type: 'uint256' }]),
   fn('setNewActivityPaused', 'nonpayable', [{ name: 'paused', type: 'bool' }]),
   fn('withdrawFees', 'nonpayable', [{ name: 'recipient', type: 'address' }, { name: 'amount', type: 'uint256' }]),
 ] as const satisfies Abi;
@@ -121,4 +119,3 @@ export const ORDER_STATES = [
   'Awaiting return courier bond', 'Return courier accepted', 'Return in transit',
   'Completed', 'Cancelled', 'Refunded', 'Courier defaulted',
 ] as const;
-

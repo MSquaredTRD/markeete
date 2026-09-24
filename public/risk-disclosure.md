@@ -26,7 +26,7 @@ Do not transact in illegal, stolen, counterfeit, dangerous, restricted or sancti
 
 The deployed contract is immutable and has not received an independent professional audit. Testing cannot prove the absence of defects. Solidity, compiler, Base, RPC, wallet, browser, dependency or integration failures may cause loss, delay or inability to transact.
 
-The contract has a liability cap and may reject new principal when the cap is reached. The guardian can pause new listings, purchases and reactivations. The guardian cannot rewrite existing deals or withdraw participant principal. The treasury can withdraw only accrued protocol fees according to contract accounting.
+The contract has no configured product-price or aggregate-liability cap. The guardian can pause new listings, purchases and reactivations. The guardian cannot rewrite existing deals or withdraw participant principal. The treasury can withdraw only accrued protocol fees according to contract accounting.
 
 ## USDC risk
 
@@ -36,7 +36,7 @@ Tokens with the same name or symbol at another address are not accepted by the p
 
 ## Wallet, interface and phishing risk
 
-An attacker may publish a copy of the interface with another contract or token address. Verify Base Mainnet, chain ID `8453`, and escrow `0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B` before signing.
+An attacker may publish a copy of the interface with another contract or token address. Verify Base Mainnet, chain ID `8453`, and escrow `0x642da3859deD225Cf42efd21346e317e8e26F58e` before signing.
 
 Wallet prompts are authoritative. Never share a seed phrase or private key. Exact USDC approvals are safer than unlimited approvals. Browser extensions, injected providers, clipboard malware and compromised devices can change transaction intent.
 

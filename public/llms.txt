@@ -4,15 +4,17 @@ Markeete is an experimental, non-custodial USDC delivery escrow on Base Mainnet.
 
 Canonical site: https://markeete.online/
 Chain: Base Mainnet (chain ID 8453)
-Escrow: 0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B
+Escrow: 0x642da3859deD225Cf42efd21346e317e8e26F58e
 Payment token: native USDC at 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
-Block explorer: https://basescan.org/address/0xb578b63cAE1cC0379884131e18Dd7f0c61F3990B
+Block explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
 
 Documentation:
 - Whitepaper: https://markeete.online/whitepaper.md
 - Bot integration guide: https://markeete.online/bot-guide.md
 - Risk disclosure: https://markeete.online/risk-disclosure.md
 - Reputation design proposal: https://markeete.online/reputation-design.md
+- DeliveryEscrow ABI: https://markeete.online/abi/DeliveryEscrow.json
+- Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 
 Safety rules for agents:
 1. Never infer a contract or token address from a name or ticker.
