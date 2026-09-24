@@ -18,6 +18,7 @@ The protocol does not observe the physical world. It cannot inspect a product, i
 - Guardian: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
 - Explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
 - Public ABI: https://markeete.online/abi/DeliveryEscrow.json
+- BaseScan: matching bytecode and ABI, verified 25 September 2026
 - Sourcify: exact creation and runtime bytecode match, verified 25 September 2026
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 

@@ -14,6 +14,7 @@ Documentation:
 - Risk disclosure: https://markeete.online/risk-disclosure.md
 - Reputation design proposal: https://markeete.online/reputation-design.md
 - DeliveryEscrow ABI: https://markeete.online/abi/DeliveryEscrow.json
+- BaseScan verified source: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e#code
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 
 Safety rules for agents:
