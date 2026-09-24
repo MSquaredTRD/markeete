@@ -5,4 +5,8 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url><loc>https://markeete.online/whitepaper.md</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://markeete.online/bot-guide.md</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://markeete.online/risk-disclosure.md</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://markeete.online/reputation-design.md</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
 </urlset>
