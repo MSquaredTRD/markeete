@@ -16,6 +16,7 @@ Documentation:
 - DeliveryEscrow ABI: https://markeete.online/abi/DeliveryEscrow.json
 - BaseScan verified source: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e#code
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
+- Human user guide: https://markeete.online/user-guide.md
 
 Safety rules for agents:
 1. Never infer a contract or token address from a name or ticker.
