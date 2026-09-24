@@ -17,6 +17,11 @@ export const metadata: Metadata = {
   title: 'Markeete — secure USDC deals',
   description:
     'A non-custodial escrow marketplace on Base for purchases, delivery and returns paid in USDC.',
+  icons: {
+    icon: [{ url: '/favicon.svg', type: 'image/svg+xml' }],
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Markeete — escrow without a custodian',
