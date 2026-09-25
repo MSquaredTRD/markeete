@@ -599,7 +599,7 @@ export default function Home() {
         <div className="panel courier-onboarding">
           <div><p className="eyebrow">No registration</p><h2>Any independent wallet can offer delivery.</h2><p>Connect a wallet that is neither the buyer nor the seller for that order. The contract identifies the courier only by that wallet address.</p></div>
           <ol><li>Keep Base ETH for gas and at least {usd(fees.offer)} USDC for each offer.</li><li>Open a job, choose pickup and delivery periods, then submit the offer.</li><li>Send the same wallet address to the seller off-chain. Only the seller can select the forward courier.</li><li>If selected, deposit the product price plus 15% as the courier bond before the deadline.</li></ol>
-          {!account ? <button className="primary" onClick={() => setWalletPicker(true)}>Connect courier wallet</button> : <div className="courier-wallet"><span>Connected applicant</span><code>{account}</code></div>}
+          {!account ? <button className="primary" onClick={() => setWalletPicker(true)}>Connect courier wallet</button> : <div className="courier-wallet"><span>Connected wallet</span><code>{account}</code><p>This wallet becomes a courier applicant only after it submits an offer for an open delivery job.</p></div>}
         </div>
         <CourierJobList title="Forward deliveries" description="Orders waiting for a courier offer and seller selection." jobs={forwardCourierJobs} account={account} openOrder={openOrder} />
         <CourierJobList title="Return deliveries" description="Voluntary returns waiting for a return-courier offer and buyer selection." jobs={returnCourierJobs} account={account} returnJob openOrder={openOrder} />
