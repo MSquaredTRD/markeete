@@ -1,6 +1,6 @@
 # ProductMetadataRegistry V1 specification
 
-Status: design approved for implementation planning; not implemented or deployed
+Status: local contract implementation and tests complete; not deployed
 
 Date: 25 September 2026
 
@@ -126,7 +126,12 @@ interface IProductMetadataRegistry {
 }
 ```
 
-The implementation may use ordinary contract storage or a tested bytecode-storage pattern after gas measurement. That choice must not change the external interface or verification rule.
+The implementation uses ordinary contract storage. This is deliberately simpler than a
+bytecode-storage pattern and keeps retrieval and revision behavior easy to inspect. Local gas
+measurement showed 2,595 bytes of runtime code, 2,783 bytes of initcode and approximately 615,551
+gas to deploy. The isolated `publish` call used approximately 104k gas for the representative short
+JSON document and 458k gas for the maximum 4,096-byte payload. The 4,096-byte cap is therefore
+retained.
 
 ### `publish` requirements
 
@@ -222,27 +227,32 @@ The buyer can always select a different destination country because IP country m
 
 No precise address is stored in registry metadata.
 
-## 12. Security tests required before deployment
+## 12. Security tests before deployment
 
-- Constructor rejects zero or non-contract escrow address.
-- Only the recorded product seller can publish.
-- Unknown product IDs revert.
-- Empty and oversized metadata revert.
-- A one-byte metadata change causes a hash mismatch and reverts.
-- A stale document cannot be republished after the escrow hash changes.
-- Revisions increment exactly once per successful publish.
-- Failed publication leaves the previous record unchanged.
-- Existing registry records remain readable after later revisions.
-- Fuzz metadata lengths at zero, limit and limit plus one.
-- Fuzz arbitrary callers, product IDs and byte strings.
-- Fork test against the verified Base deployment.
-- Frontend test that invalid bytes, invalid JSON, wrong seller, wrong chain and wrong hash disable Buy.
-- Gas measurements for 256, 1,024, 2,048 and 4,096-byte metadata documents.
+Local implementation status: 22 tests pass, including 2,000-run fuzz tests. The suite also deploys
+the real `DeliveryEscrow` implementation locally and confirms that the registry's minimal product
+interface decodes its actual `getProduct` ABI correctly.
+
+- [x] Constructor rejects zero or non-contract escrow address.
+- [x] Only the recorded product seller can publish.
+- [x] Unknown product IDs revert.
+- [x] Empty and oversized metadata revert.
+- [x] A one-byte metadata change causes a hash mismatch and reverts.
+- [x] A stale document cannot be republished after the escrow hash changes.
+- [x] Revisions increment exactly once per successful publish.
+- [x] Failed publication leaves the previous record unchanged.
+- [x] Existing registry records remain readable after later revisions.
+- [x] Maximum length and maximum length plus one are tested.
+- [x] Arbitrary callers and byte strings are fuzzed.
+- [x] The real local `DeliveryEscrow.getProduct` ABI is tested.
+- [x] Gas measurements cover 256, 1,024, 2,048 and 4,096-byte metadata documents.
+- [ ] Fork test against the verified Base deployment.
+- [ ] Frontend test that invalid bytes, invalid JSON, wrong seller, wrong chain and wrong hash disable Buy.
 
 ## 13. Deployment sequence
 
-1. Implement contract and tests locally.
-2. Complete review of byte-storage choice and gas measurements.
+1. **Complete:** implement contract and tests locally.
+2. **Complete:** review byte-storage choice and gas measurements.
 3. Deploy to Base Sepolia.
 4. Publish source and verify exact bytecode.
 5. Integrate the testnet interface and migrate a test product.
