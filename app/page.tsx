@@ -4,6 +4,7 @@ import {
   createPublicClient,
   createWalletClient,
   custom,
+  fallback,
   formatUnits,
   http,
   isAddress,
@@ -21,6 +22,7 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode, type Synthet
 import {
   BASESCAN_URL,
   BASE_CHAIN_ID,
+  BASE_READ_RPC_URLS,
   BASE_RPC_URL,
   ESCROW_ADDRESS,
   ORDER_STATES,
@@ -32,7 +34,17 @@ import {
   usdcAbi,
 } from '@/lib/contract';
 
-const publicClient = createPublicClient({ chain: base, transport: http(BASE_RPC_URL) });
+const publicClient = createPublicClient({
+  chain: base,
+  batch: { multicall: { batchSize: 64_000, wait: 10 } },
+  transport: fallback(
+    BASE_READ_RPC_URLS.map((url) => http(url, {
+      batch: { batchSize: 50, wait: 10 },
+      timeout: 8_000,
+    })),
+    { retryCount: 1, retryDelay: 250 },
+  ),
+});
 
 type Product = { seller: Address; price: bigint; metadataHash: Hash; status: number };
 type Order = {
@@ -196,7 +208,7 @@ export default function Home() {
         ]);
         setBalance(walletBalance); setClaimable(available);
       }
-    } catch (error) { setNotice(`Could not read Base: ${errorText(error)}`); }
+    } catch (error) { setNotice(`Could not read Base from any configured RPC. Your on-chain funds and listings are unaffected. ${errorText(error)}`); }
     finally { setLoading(false); }
   }, []);
 
