@@ -1,8 +1,8 @@
 # Product metadata registry
 
-`ProductMetadataRegistry.sol` is the reviewed local implementation for the separate Markeete
-catalog registry. It is not deployed yet and has no effect on the production website or the
-immutable DeliveryEscrow V2 contract.
+`ProductMetadataRegistry.sol` is deployed on Base Mainnet at
+`0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016`. It is a separate catalog registry and cannot change
+the immutable DeliveryEscrow V2 contract.
 
 The registry:
 

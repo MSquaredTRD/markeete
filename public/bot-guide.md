@@ -11,10 +11,12 @@ Network: Base Mainnet
 Chain ID: 8453
 RPC example: https://mainnet.base.org
 Escrow: 0x642da3859deD225Cf42efd21346e317e8e26F58e
+Product metadata registry: 0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016
 USDC: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 USDC decimals: 6
 Explorer: https://basescan.org
 ABI: https://markeete.online/abi/DeliveryEscrow.json
+Registry ABI: https://markeete.online/abi/ProductMetadataRegistry.json
 Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 ```
 
@@ -51,6 +53,7 @@ import {
 import { base } from 'viem/chains';
 
 const ESCROW = '0x642da3859deD225Cf42efd21346e317e8e26F58e';
+const REGISTRY = '0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016';
 const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
 
 const publicClient = createPublicClient({
@@ -67,6 +70,8 @@ const amount = parseUnits('20.00', 6); // 20,000,000
 ```
 
 Load the escrow ABI from the canonical URL above and independently compare it with the Sourcify record. Use the standard ERC-20 functions `approve`, `allowance`, `balanceOf` and `decimals` for USDC.
+
+For a catalog entry, read `getMetadata(productId)` from `REGISTRY`. Reject it unless the revision is non-zero, `keccak256(metadata)` equals both the returned registry hash and `DeliveryEscrow.getProduct(productId).metadataHash`, and the decoded document identifies chain ID 8453, the canonical escrow and the recorded seller. Never treat hash integrity as proof that a seller's description is true.
 
 ## 5. Mandatory preflight before every write
 

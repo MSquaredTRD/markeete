@@ -13,11 +13,13 @@ The protocol does not observe the physical world. It cannot inspect a product, i
 - Network: Base Mainnet
 - Chain ID: `8453`
 - DeliveryEscrow V2: `0x642da3859deD225Cf42efd21346e317e8e26F58e`
+- ProductMetadataRegistry: `0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016`
 - Native USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
 - Treasury: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
 - Guardian: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
 - Explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
 - Public ABI: https://markeete.online/abi/DeliveryEscrow.json
+- Registry ABI: https://markeete.online/abi/ProductMetadataRegistry.json
 - BaseScan: matching bytecode and ABI, verified 25 September 2026
 - Sourcify: exact creation and runtime bytecode match, verified 25 September 2026
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all

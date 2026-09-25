@@ -1,6 +1,7 @@
 import type { Abi, Address } from 'viem';
 
 export const ESCROW_ADDRESS = '0x642da3859deD225Cf42efd21346e317e8e26F58e' as Address;
+export const METADATA_REGISTRY_ADDRESS = '0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016' as Address;
 export const USDC_ADDRESS = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address;
 export const TREASURY_ADDRESS = '0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A' as Address;
 export const BASE_CHAIN_ID = 8453;
@@ -13,7 +14,9 @@ export const BASE_READ_RPC_URLS = [
 ] as const;
 export const BASESCAN_URL = 'https://basescan.org';
 export const VERIFIED_CONTRACT_URL = `${BASESCAN_URL}/address/${ESCROW_ADDRESS}#code`;
+export const METADATA_REGISTRY_URL = `${BASESCAN_URL}/address/${METADATA_REGISTRY_ADDRESS}#code`;
 export const SOURCIFY_CONTRACT_URL = `https://sourcify.dev/server/v2/contract/${BASE_CHAIN_ID}/${ESCROW_ADDRESS}?fields=all`;
+export const SOURCIFY_METADATA_REGISTRY_URL = `https://sourcify.dev/server/v2/contract/${BASE_CHAIN_ID}/${METADATA_REGISTRY_ADDRESS}?fields=all`;
 
 const productComponents = [
   { name: 'seller', type: 'address' },
@@ -68,6 +71,16 @@ const fn = (
 ) => ({ type: 'function', name, stateMutability, inputs, outputs }) as const;
 
 export const escrowAbi = [
+  {
+    type: 'event',
+    name: 'ProductListed',
+    inputs: [
+      { name: 'productId', type: 'uint256', indexed: true },
+      { name: 'seller', type: 'address', indexed: true },
+      { name: 'price', type: 'uint128', indexed: false },
+      { name: 'metadataHash', type: 'bytes32', indexed: true },
+    ],
+  },
   fn('getProduct', 'view', [{ name: 'productId', type: 'uint256' }], [{ name: '', type: 'tuple', components: productComponents }]),
   fn('getOrder', 'view', [{ name: 'orderId', type: 'uint256' }], [{ name: '', type: 'tuple', components: orderComponents }]),
   fn('nextProductId', 'view', [], [{ name: '', type: 'uint256' }]),
@@ -112,6 +125,22 @@ export const escrowAbi = [
   fn('claim', 'nonpayable', [], [{ name: 'netAmount', type: 'uint256' }]),
   fn('setNewActivityPaused', 'nonpayable', [{ name: 'paused', type: 'bool' }]),
   fn('withdrawFees', 'nonpayable', [{ name: 'recipient', type: 'address' }, { name: 'amount', type: 'uint256' }]),
+] as const satisfies Abi;
+
+export const metadataRegistryAbi = [
+  fn('escrow', 'view', [], [{ name: '', type: 'address' }]),
+  fn('MAX_METADATA_LENGTH', 'view', [], [{ name: '', type: 'uint256' }]),
+  fn('publish', 'nonpayable', [
+    { name: 'productId', type: 'uint256' },
+    { name: 'metadata', type: 'bytes' },
+  ]),
+  fn('getMetadata', 'view', [{ name: 'productId', type: 'uint256' }], [
+    { name: 'metadata', type: 'bytes' },
+    { name: 'metadataHash', type: 'bytes32' },
+    { name: 'revision', type: 'uint32' },
+    { name: 'publishedAt', type: 'uint64' },
+  ]),
+  fn('isCurrent', 'view', [{ name: 'productId', type: 'uint256' }], [{ name: '', type: 'bool' }]),
 ] as const satisfies Abi;
 
 export const usdcAbi = [

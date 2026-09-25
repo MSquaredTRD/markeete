@@ -1,6 +1,12 @@
 # ProductMetadataRegistry V1 specification
 
-Status: local contract implementation and tests complete; not deployed
+Status: deployed on Base Mainnet and integrated into the interface
+
+Deployment: `0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016`
+
+Deployment transaction: `0x775938e0ca079c75bfb575172068a0320549ede850aeea545af9bb1f1d579f3d`
+
+Sourcify verification: exact match
 
 Date: 25 September 2026
 

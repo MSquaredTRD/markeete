@@ -13,7 +13,7 @@
 * { box-sizing: border-box; }
 html { background: var(--paper); color: var(--ink); scroll-behavior: smooth; }
 body { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.45; }
-button, input { font: inherit; }
+button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
 a { color: inherit; }
@@ -54,20 +54,32 @@ button:disabled { opacity: .38; cursor: not-allowed; }
 .product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .product-card { padding: 22px; min-height: 255px; display: flex; flex-direction: column; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .product-index { font-size: 12px; color: var(--muted); }
+.verified-metadata { margin-left: 8px; color: var(--green); font-weight: 700; }
 .product-card h3 { font-size: 22px; letter-spacing: -.03em; margin: 22px 0 5px; overflow-wrap: anywhere; }
 .product-card .mono { font-size: 11px; color: #888; margin: 0; }
+.product-description { margin: 7px 0 12px; color: #555; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.shipping-summary { margin: 0 0 12px; color: #444; font-size: 12px; font-weight: 700; }
+.metadata-warning { margin: 8px 0 14px; padding: 10px; color: var(--red); background: #fff4f2; font-size: 12px; }
 .seller { margin-top: auto; padding-top: 28px; color: var(--muted); font-size: 12px; }
 .seller a { color: #111; }
 .product-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--line); }
 .product-bottom strong { font-size: 20px; }
 .product-bottom button { border: 0; border-radius: 5px; background: #111; color: #fff; padding: 8px 13px; cursor: pointer; font-weight: 700; }
+.product-actions { display: flex; gap: 7px; }
+.product-bottom button.manage { color: #111; background: #fff; border: 1px solid #bbb; }
+.product-bottom button:disabled { cursor: not-allowed; }
 
 .panel { border: 1px solid var(--line); padding: 24px; margin-top: 24px; background: #fff; }
 .form { margin-top: 42px; display: grid; gap: 22px; }
 .field { display: grid; gap: 8px; font-size: 13px; font-weight: 700; min-width: 0; }
 .field small { color: var(--muted); font-weight: 400; line-height: 1.35; }
-.field input { width: 100%; border: 1px solid #cfcfcf; border-radius: 5px; background: #fff; padding: 11px 12px; outline: none; min-width: 0; }
-.field input:focus { border-color: #111; box-shadow: 0 0 0 1px #111; }
+.field input, .field textarea, .field select { width: 100%; border: 1px solid #cfcfcf; border-radius: 5px; background: #fff; padding: 11px 12px; outline: none; min-width: 0; }
+.field textarea { min-height: 130px; resize: vertical; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: #111; box-shadow: 0 0 0 1px #111; }
+.method-picker { margin: 0; border: 1px solid var(--line); padding: 15px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+.method-picker legend { padding: 0 6px; font-size: 13px; font-weight: 700; }
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.product-manager { width: 100%; justify-content: flex-start; text-align: left; }
 .fee-line { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .empty { min-height: 130px; border: 1px dashed #ccc; background: #fafafa; color: var(--muted); display: grid; place-items: center; text-align: center; padding: 30px; }
 

@@ -1,0 +1,69 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [{ "name": "escrow_", "type": "address", "internalType": "contract IDeliveryEscrowProducts" }],
+    "stateMutability": "nonpayable"
+  },
+  { "type": "error", "name": "EscrowHasNoCode", "inputs": [] },
+  { "type": "error", "name": "InvalidMetadataLength", "inputs": [] },
+  { "type": "error", "name": "MetadataHashMismatch", "inputs": [] },
+  { "type": "error", "name": "MetadataUnchanged", "inputs": [] },
+  { "type": "error", "name": "ProductNotFound", "inputs": [] },
+  { "type": "error", "name": "Unauthorized", "inputs": [] },
+  { "type": "error", "name": "ZeroAddress", "inputs": [] },
+  {
+    "type": "event",
+    "name": "MetadataPublished",
+    "inputs": [
+      { "name": "productId", "type": "uint256", "indexed": true, "internalType": "uint256" },
+      { "name": "seller", "type": "address", "indexed": true, "internalType": "address" },
+      { "name": "metadataHash", "type": "bytes32", "indexed": true, "internalType": "bytes32" },
+      { "name": "revision", "type": "uint32", "indexed": false, "internalType": "uint32" },
+      { "name": "length", "type": "uint256", "indexed": false, "internalType": "uint256" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "function",
+    "name": "MAX_METADATA_LENGTH",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "escrow",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "contract IDeliveryEscrowProducts" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getMetadata",
+    "inputs": [{ "name": "productId", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [
+      { "name": "metadata", "type": "bytes", "internalType": "bytes" },
+      { "name": "metadataHash", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "revision", "type": "uint32", "internalType": "uint32" },
+      { "name": "publishedAt", "type": "uint64", "internalType": "uint64" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isCurrent",
+    "inputs": [{ "name": "productId", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "publish",
+    "inputs": [
+      { "name": "productId", "type": "uint256", "internalType": "uint256" },
+      { "name": "metadata", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  }
+]

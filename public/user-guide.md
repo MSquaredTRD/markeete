@@ -13,6 +13,7 @@ Website: https://markeete.online
 Network: Base Mainnet
 Chain ID: 8453
 DeliveryEscrow V2: 0x642da3859deD225Cf42efd21346e317e8e26F58e
+ProductMetadataRegistry: 0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016
 Native USDC: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 Verified source: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e#code
 ```
@@ -35,7 +36,7 @@ An **Approve USDC** transaction gives the escrow permission to pull the displaye
 - Markeete has no accounts, chat, identity verification, address book or backend database.
 - Contact details, delivery addresses, product photos and physical meeting arrangements must be exchanged off-chain by the participants.
 - Do not put a home address, phone number, passport data or another secret into an on-chain field.
-- The contract stores a product price and a `bytes32` metadata commitment. The readable label entered in the current interface is stored only in that browser. A different device may display only `Product #N` unless the seller shares the description separately.
+- Product descriptions and shipping regions are public on Base. The interface displays them only after automatically verifying their bytes against the product's current escrow hash.
 - Courier offers are recorded on-chain, but the current interface does not provide a complete applicant directory. A courier should send the seller or buyer the courier wallet address off-chain. The selecting party then enters that exact address.
 - The blockchain cannot inspect an item or prove a physical handoff. It acts on the assigned wallets' signatures and deterministic deadlines.
 
@@ -57,16 +58,16 @@ Wallet gas is paid separately in Base ETH. Failed or rejected transactions do no
 
 1. Connect the wallet that will be the seller for the entire deal.
 2. Open **List product**.
-3. Enter a label or an existing `bytes32` metadata hash.
+3. Enter the public title, description, shipping policy, country codes and delivery methods.
 4. Enter the product price in USDC.
 5. Review the 0.20 USDC listing fee.
-6. Press **List product**.
+6. Press **List and publish**.
 7. If requested, approve the exact USDC amount in the wallet.
 8. Confirm the listing transaction.
-9. Wait for both transactions to succeed.
-10. Record the product ID and share the product description, photos, conditions and contact method with potential buyers off-chain.
+9. Confirm the second transaction that publishes the exact matching description to ProductMetadataRegistry. It transfers no USDC.
+10. Wait until Market displays **On-chain details verified**. If the second confirmation was interrupted, use **Finish publishing**.
 
-The seller may update, deactivate or reactivate an available listing through direct contract calls, but those controls are not yet exposed as dedicated buttons in this first interface.
+Use **Manage** on an active product to update its price or public details. The interface updates the escrow hash first and then publishes the matching bytes.
 
 ### B. Wait for a buyer and courier offers
 
