@@ -71,7 +71,7 @@ type WebMcpTool = {
 };
 
 const EMPTY_FEES: Fees = { listing: 200_000n, purchase: 1_000_000n, action: 200_000n, offer: 50_000n };
-const TABS = ['Market', 'Orders', 'List product', 'Funds', 'Protocol', 'Docs'] as const;
+const TABS = ['Market', 'Orders', 'Courier', 'List product', 'Funds', 'Protocol', 'Docs'] as const;
 type Tab = (typeof TABS)[number];
 
 declare global {
@@ -119,6 +119,31 @@ function Stat({ label, value }: { label: string; value: ReactNode }) {
   return <div className="stat"><span>{label}</span><strong>{value}</strong></div>;
 }
 function Empty({ children }: { children: ReactNode }) { return <div className="empty">{children}</div>; }
+
+function CourierJobList({ title, description, jobs, account, returnJob, openOrder }: {
+  title: string;
+  description: string;
+  jobs: Array<Order & { id: bigint }>;
+  account?: Address;
+  returnJob?: boolean;
+  openOrder: (id: bigint) => void;
+}) {
+  return <section className="courier-section">
+    <div className="courier-section-head"><div><h2>{title}</h2><p>{description}</p></div><span>{jobs.length} open</span></div>
+    {jobs.length === 0 ? <Empty>No open {returnJob ? 'return' : 'forward'} courier jobs in the latest 50 orders.</Empty> : <div className="courier-jobs">
+      {jobs.map((order) => {
+        const ineligible = sameAddress(account, order.buyer) || sameAddress(account, order.seller);
+        const bond = order.price + (order.price * 1500n + 9999n) / 10_000n;
+        return <article className="courier-job" key={order.id.toString()}>
+          <div className="courier-job-head"><div><span>Order #{order.id.toString()}</span><h3>Product #{order.productId.toString()}</h3></div><span className="state">{returnJob ? 'Return requested' : 'Finding courier'}</span></div>
+          <div className="courier-job-stats"><Stat label="Product value" value={usd(order.price)} /><Stat label="Courier payment" value={usd(returnJob ? order.returnDeliveryFee : order.forwardDeliveryFee)} /><Stat label="Bond if selected" value={usd(bond)} /><Stat label="Offers close" value={deadline(returnJob ? order.returnAcceptDeadline : order.courierAcceptDeadline)} /></div>
+          <div className="courier-job-parties"><span>Seller <code>{shortAddress(order.seller)}</code></span><span>Buyer <code>{shortAddress(order.buyer)}</code></span></div>
+          <button className="primary full" disabled={ineligible} onClick={() => openOrder(order.id)}>{ineligible ? 'Buyer / seller cannot courier this order' : account ? 'Open and submit offer' : 'Open job · connect wallet to offer'}</button>
+        </article>;
+      })}
+    </div>}
+  </section>;
+}
 
 export default function Home() {
   const [tab, setTab] = useState<Tab>('Market');
@@ -323,6 +348,9 @@ export default function Home() {
   }
 
   const myOrders = account ? orders.filter((order) => sameAddress(account, order.buyer) || sameAddress(account, order.seller) || sameAddress(account, order.courier) || sameAddress(account, order.returnCourier)) : orders;
+  const forwardCourierJobs = orders.filter((order) => order.state === 1);
+  const returnCourierJobs = orders.filter((order) => order.state === 7);
+  const openOrder = (id: bigint) => { setSelectedOrderId(id.toString()); setTab('Orders'); };
   const role = selectedOrder && account ? [sameAddress(account, selectedOrder.buyer) && 'buyer', sameAddress(account, selectedOrder.seller) && 'seller', sameAddress(account, selectedOrder.courier) && 'courier', sameAddress(account, selectedOrder.returnCourier) && 'return courier'].filter(Boolean).join(', ') || 'observer' : '—';
 
   return (
@@ -343,6 +371,17 @@ export default function Home() {
       {tab === 'List product' && <section className="page narrow"><p className="eyebrow">Seller</p><h1 className="page-title">New product</h1><p className="lede">The contract stores the price, your address and an irreversible bytes32 metadata hash. The readable label stays only in this browser.</p><form className="panel form" onSubmit={submitListing}><Field label="Label or existing bytes32 hash" hint="For this first release, the label is hashed in your browser. Do not enter private information."><input value={listingTitle} onChange={(e) => setListingTitle(e.target.value)} placeholder="Example: Vacuum cleaner, sealed" required /></Field><Field label="Product price, USDC"><input inputMode="decimal" value={listingPrice} onChange={(e) => setListingPrice(e.target.value)} placeholder="100.00" required /></Field><div className="fee-line"><span>Listing fee</span><strong>{usd(fees.listing)}</strong></div><p className="transaction-disclosure">You are solely responsible for the listing, product legality, description, taxes, export rules and delivery arrangements. On-chain fees are not refundable.</p><button className="primary full" disabled={busy || paused}>{paused ? 'New activity is paused' : 'List product'}</button></form></section>}
 
       {tab === 'Orders' && <section className="page"><div className="section-head"><div><p className="eyebrow">Roles are determined by wallet address</p><h1 className="page-title">Orders</h1></div><button className="text-button" onClick={() => void refresh(account)} disabled={loading}>Refresh</button></div><div className="orders-layout"><aside className="order-list">{!account && <div className="connect-note">Connect a wallet to filter your deals.</div>}{myOrders.length === 0 ? <Empty>No orders yet.</Empty> : myOrders.map((order) => <button key={order.id.toString()} onClick={() => setSelectedOrderId(order.id.toString())} className={selectedOrderId === order.id.toString() ? 'order-row selected' : 'order-row'}><span><strong>Order #{order.id.toString()}</strong><small>Product #{order.productId.toString()}</small></span><em>{ORDER_STATES[order.state] || `State ${order.state}`}</em></button>)}<Field label="Open order by ID"><div className="inline"><input inputMode="numeric" value={selectedOrderId} onChange={(e) => setSelectedOrderId(e.target.value.replace(/\D/g, ''))} placeholder="1" /><button className="secondary" type="button" onClick={() => void refresh(account)}>Open</button></div></Field></aside><div className="order-detail">{!selectedOrder ? <Empty>Choose an order on the left.</Empty> : <OrderDetail order={selectedOrder} role={role} actionFee={fees.action} offerFee={fees.offer} pickupDays={pickupDays} setPickupDays={setPickupDays} deliveryDays={deliveryDays} setDeliveryDays={setDeliveryDays} courierAddress={courierAddress} setCourierAddress={setCourierAddress} returnCourierAddress={returnCourierAddress} setReturnCourierAddress={setReturnCourierAddress} account={account} busy={busy} simple={simple} />}</div></div></section>}
+
+      {tab === 'Courier' && <section className="page courier-page">
+        <div className="section-head"><div><p className="eyebrow">Permissionless courier access</p><h1 className="page-title">Courier jobs</h1></div><button className="text-button" onClick={() => void refresh(account)} disabled={loading}>Refresh</button></div>
+        <div className="panel courier-onboarding">
+          <div><p className="eyebrow">No registration</p><h2>Any independent wallet can offer delivery.</h2><p>Connect a wallet that is neither the buyer nor the seller for that order. The contract identifies the courier only by that wallet address.</p></div>
+          <ol><li>Keep Base ETH for gas and at least {usd(fees.offer)} USDC for each offer.</li><li>Open a job, choose pickup and delivery periods, then submit the offer.</li><li>Send the same wallet address to the seller off-chain. Only the seller can select the forward courier.</li><li>If selected, deposit the product price plus 15% as the courier bond before the deadline.</li></ol>
+          {!account ? <button className="primary" onClick={() => setWalletPicker(true)}>Connect courier wallet</button> : <div className="courier-wallet"><span>Connected applicant</span><code>{account}</code></div>}
+        </div>
+        <CourierJobList title="Forward deliveries" description="Orders waiting for a courier offer and seller selection." jobs={forwardCourierJobs} account={account} openOrder={openOrder} />
+        <CourierJobList title="Return deliveries" description="Voluntary returns waiting for a return-courier offer and buyer selection." jobs={returnCourierJobs} account={account} returnJob openOrder={openOrder} />
+      </section>}
 
       {tab === 'Funds' && <section className="page narrow"><p className="eyebrow">Pull payments</p><h1 className="page-title">Funds</h1><div className="stats-grid"><Stat label="Wallet balance" value={`${usd(balance)} USDC`} /><Stat label="Available to claim" value={`${usd(claimable)} USDC`} /></div><div className="panel stack"><h2>Claim released funds</h2><p>Only this credited wallet can claim its USDC. Released amounts may be accumulated and claimed later; the fixed claim fee is deducted once per claim: {usd(fees.action)}.</p><button className="primary" disabled={busy || claimable === 0n} onClick={() => simple('Claiming funds', 'claim')}>Claim {usd(claimable)}</button></div>{sameAddress(account, TREASURY_ADDRESS) && <div className="panel stack treasury"><h2>Treasury</h2><p>Accrued fees: {usd(accruedFees)}. Only the treasury wallet can call this.</p><Field label="Recipient"><input value={withdrawRecipient} onChange={(e) => setWithdrawRecipient(e.target.value)} /></Field><Field label="Amount, USDC"><input inputMode="decimal" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="1.00" /></Field><button className="primary" disabled={busy || !isAddress(withdrawRecipient)} onClick={() => simple('Withdrawing fees', 'withdrawFees', [withdrawRecipient as Address, toUsdc(withdrawAmount)])}>Withdraw fees</button></div>}</section>}
 
@@ -381,13 +420,13 @@ function OrderDetail({ order, role, actionFee, offerFee, pickupDays, setPickupDa
     <div className="stats-grid order-stats"><Stat label="Price" value={usd(order.price)} /><Stat label="Delivery" value={usd(order.forwardDeliveryFee)} /><Stat label="Return delivery" value={usd(order.returnDeliveryFee)} /><Stat label="Product" value={`#${order.productId}`} /></div>
     <div className="panel parties"><div><span>Buyer</span><code>{shortAddress(order.buyer)}</code></div><div><span>Seller</span><code>{shortAddress(order.seller)}</code></div><div><span>Courier</span><code>{order.courier === zeroAddress ? 'not selected' : shortAddress(order.courier)}</code></div><div><span>Return courier</span><code>{order.returnCourier === zeroAddress ? 'not selected' : shortAddress(order.returnCourier)}</code></div></div>
     <div className="panel stack actions"><h3>Available actions</h3>
-      {order.state === 1 && <>{!isBuyer && !isSeller && <div className="action-form"><Field label="Pickup within, days"><input inputMode="decimal" value={pickupDays} onChange={(e) => setPickupDays(e.target.value)} /></Field><Field label="Delivery after pickup, days"><input inputMode="decimal" value={deliveryDays} onChange={(e) => setDeliveryDays(e.target.value)} /></Field><button className="primary" disabled={busy} onClick={() => simple('Courier offer', 'acceptCourier', [id, toPeriod(pickupDays), toPeriod(deliveryDays)], offerFee)}>Offer delivery · {usd(offerFee)}</button></div>}{isSeller && <div className="action-form"><Field label="Selected courier address"><input value={courierAddress} onChange={(e) => setCourierAddress(e.target.value)} placeholder="0x…" /></Field><button className="primary" disabled={busy || !isAddress(courierAddress)} onClick={() => simple('Courier selection', 'approveCourier', [id, courierAddress as Address])}>Approve courier</button></div>}{isBuyer && action('Cancel order', 'cancelUnmatchedOrder', actionFee)}{action('Expire overdue stage', 'expireOrderBeforePickup')}</>}
+      {order.state === 1 && <>{!isBuyer && !isSeller && <div className="action-form"><Field label="Pickup within, days"><input inputMode="decimal" value={pickupDays} onChange={(e) => setPickupDays(e.target.value)} /></Field><Field label="Delivery after pickup, days"><input inputMode="decimal" value={deliveryDays} onChange={(e) => setDeliveryDays(e.target.value)} /></Field><button className="primary" disabled={busy} onClick={() => simple('Courier offer', 'acceptCourier', [id, toPeriod(pickupDays), toPeriod(deliveryDays)], offerFee)}>Offer delivery · {usd(offerFee)}</button></div>}{isSeller && <div className="action-form"><p className="action-help">Paste the exact address of a courier who already submitted an on-chain offer for this order. Ask the applicant for that address off-chain; the contract rejects wallets without an active offer.</p><Field label="Selected courier address"><input value={courierAddress} onChange={(e) => setCourierAddress(e.target.value)} placeholder="0x…" /></Field><button className="primary" disabled={busy || !isAddress(courierAddress)} onClick={() => simple('Courier selection', 'approveCourier', [id, courierAddress as Address])}>Approve courier</button></div>}{isBuyer && action('Cancel order', 'cancelUnmatchedOrder', actionFee)}{action('Expire overdue stage', 'expireOrderBeforePickup')}</>}
       {order.state === 2 && <>{isCourier && action(`Fund bond ${usd(courierBond)}`, 'fundCourierBond', courierBond + actionFee)}{action('Reset expired selection', 'expireOrderBeforePickup')}</>}
       {order.state === 3 && <>{isSeller && action(`Fund bond ${usd(sellerBond)}`, 'fundSellerBond', sellerBond + actionFee)}{action('Finalize timeout', 'expireOrderBeforePickup')}</>}
       {order.state === 4 && <>{(isSeller || isCourier) && action('Confirm courier pickup', 'confirmPickup', actionFee)}{action('Finalize timeout', 'expireOrderBeforePickup')}</>}
       {order.state === 5 && <>{(isBuyer || isCourier) && action('Confirm delivery', 'confirmDelivery', actionFee)}{(isBuyer || isCourier) && action('Confirm mismatch', 'confirmMismatch', actionFee)}{isCourier && order.deliveryMode === 1 && action('Confirm safe drop', 'confirmSafeDrop', actionFee)}{isCourier && order.absentReportedAt === 0n && action('Report buyer absent', 'reportBuyerAbsent', actionFee)}{isCourier && order.absentReportedAt > 0n && action('Start absent-buyer return', 'beginBuyerAbsentReturn', actionFee)}{action('Finalize courier report', 'finalizeCourierReportedDelivery')}{action('Declare courier default', 'declareCourierDefault')}</>}
       {order.state === 6 && <>{isBuyer && action('Request return', 'requestReturn', actionFee)}{action('Finalize after inspection', 'finalizeInspection')}</>}
-      {order.state === 7 && <>{!isBuyer && !isSeller && action(`Offer return delivery · ${usd(offerFee)}`, 'acceptReturnCourier', offerFee)}{isBuyer && <div className="action-form"><Field label="Return courier address"><input value={returnCourierAddress} onChange={(e) => setReturnCourierAddress(e.target.value)} placeholder="0x…" /></Field><button className="primary" disabled={busy || !isAddress(returnCourierAddress)} onClick={() => simple('Selecting return courier', 'approveReturnCourier', [id, returnCourierAddress as Address])}>Approve courier</button></div>}{action('Expire unmatched return', 'expireUnmatchedReturn')}</>}
+      {order.state === 7 && <>{!isBuyer && !isSeller && action(`Offer return delivery · ${usd(offerFee)}`, 'acceptReturnCourier', offerFee)}{isBuyer && <div className="action-form"><p className="action-help">Paste the exact address of a return courier who already submitted an on-chain offer for this order. The contract rejects wallets without an active offer.</p><Field label="Return courier address"><input value={returnCourierAddress} onChange={(e) => setReturnCourierAddress(e.target.value)} placeholder="0x…" /></Field><button className="primary" disabled={busy || !isAddress(returnCourierAddress)} onClick={() => simple('Selecting return courier', 'approveReturnCourier', [id, returnCourierAddress as Address])}>Approve courier</button></div>}{action('Expire unmatched return', 'expireUnmatchedReturn')}</>}
       {order.state === 8 && <>{isReturnCourier && action(`Fund bond ${usd(courierBond)}`, 'fundReturnCourierBond', courierBond + actionFee)}{action('Reset after timeout', 'expireUnmatchedReturn')}</>}
       {order.state === 9 && <>{(isBuyer || isReturnCourier) && action('Confirm return pickup', 'confirmReturnPickup', actionFee)}{action('Reset after timeout', 'expireUnmatchedReturn')}</>}
       {order.state === 10 && <>{(isSeller || isReturnCourier) && action('Confirm return delivery', 'confirmReturnDelivery', actionFee)}{action('Finalize courier report', 'finalizeCourierReportedReturn')}{action('Declare return courier default', 'declareCourierDefault')}</>}

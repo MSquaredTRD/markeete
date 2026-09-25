@@ -228,14 +228,14 @@ The buyer and seller wallets for an order cannot act as its courier. A courier m
 
 ### A. Submit a forward-delivery offer
 
-1. Obtain an open order ID from the buyer, seller or an external indexer.
-2. Connect the wallet that will remain the courier wallet throughout the delivery.
-3. Open **Orders** and enter the order ID manually if it is not listed.
-4. Confirm the order state is **Finding courier**.
+1. Connect the wallet that will remain the courier wallet throughout the delivery.
+2. Open **Courier**. No account, registration or administrator approval is required.
+3. Find the order under **Forward deliveries** and press **Open and submit offer**. The buyer and seller wallets for that order are not eligible.
+4. Confirm the order state is **Finding courier**. If the job is outside the latest 50 orders, open **Orders** and enter its order ID manually.
 5. Enter the proposed pickup period and delivery period.
 6. Press **Offer delivery**.
 7. Approve and pay the 0.05 USDC courier-offer fee.
-8. Send the same courier wallet address to the seller off-chain.
+8. Send the same courier wallet address to the seller off-chain. The contract records the offer, but it does not publish an enumerable applicant list for the seller interface.
 
 Submitting an offer does not lock a bond and does not guarantee selection. Multiple couriers may offer; only the seller selects the forward courier.
 
@@ -307,8 +307,8 @@ Missing the on-chain reporting window can change the available settlement path. 
 
 ### H. Work as a voluntary return courier
 
-1. Obtain an order ID in **Return requested** state.
-2. Open the order and press **Offer return delivery**.
+1. Connect a courier wallet, open **Courier** and find an order under **Return deliveries**. It must be in **Return requested** state.
+2. Open the order and press **Offer return delivery**. For older orders, open **Orders** and enter the order ID manually.
 3. Pay the 0.05 USDC offer fee.
 4. Send the courier wallet address to the buyer off-chain.
 5. If selected, deposit the product price plus 15% bond and the 0.20 USDC funding fee before the deadline.
