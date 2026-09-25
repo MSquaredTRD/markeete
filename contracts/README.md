@@ -1,5 +1,8 @@
 # Product metadata registry
 
+This directory contains the deployed Solidity sources for DeliveryEscrow V2 and the separate
+ProductMetadataRegistry catalog contract.
+
 `ProductMetadataRegistry.sol` is deployed on Base Mainnet at
 `0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016`. It is a separate catalog registry and cannot change
 the immutable DeliveryEscrow V2 contract.

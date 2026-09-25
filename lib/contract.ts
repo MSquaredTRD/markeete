@@ -13,6 +13,7 @@ export const BASE_READ_RPC_URLS = [
   'https://base.gateway.tenderly.co',
 ] as const;
 export const BASESCAN_URL = 'https://basescan.org';
+export const SOURCE_REPOSITORY_URL = 'https://github.com/MSquaredTRD/markeete';
 export const VERIFIED_CONTRACT_URL = `${BASESCAN_URL}/address/${ESCROW_ADDRESS}#code`;
 export const METADATA_REGISTRY_URL = `${BASESCAN_URL}/address/${METADATA_REGISTRY_ADDRESS}#code`;
 export const SOURCIFY_CONTRACT_URL = `https://sourcify.dev/server/v2/contract/${BASE_CHAIN_ID}/${ESCROW_ADDRESS}?fields=all`;
