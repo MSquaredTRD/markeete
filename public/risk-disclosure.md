@@ -4,7 +4,7 @@ Last updated: 25 September 2026
 
 ## Short version
 
-Markeete is experimental, unaudited software. It is a user interface for an immutable smart contract on Base. It is not a bank, custodian, insurer, carrier, inspection service, identity provider, marketplace arbiter or dispute-resolution service. Use only funds you can afford to lose.
+Markeete is experimental software with no independent professional audit. An [AI-generated ABI and bytecode review](./audits/DeliveryEscrow_Security_Audit_0x642da385.pdf) is published with separate [scope notes and known corrections](./audit-notes.md); it is not a security certification. Markeete is a user interface for an immutable smart contract on Base. It is not a bank, custodian, insurer, carrier, inspection service, identity provider, marketplace arbiter or dispute-resolution service. Use only funds you can afford to lose.
 
 ## No custody and no recovery
 
