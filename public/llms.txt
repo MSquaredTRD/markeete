@@ -10,6 +10,7 @@ Payment token: native USDC at 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
 Block explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
 
 Documentation:
+- Technical reference: https://markeete.online/technical-reference.md
 - Whitepaper: https://markeete.online/whitepaper.md
 - Bot integration guide: https://markeete.online/bot-guide.md
 - Risk disclosure: https://markeete.online/risk-disclosure.md
@@ -17,6 +18,7 @@ Documentation:
 - DeliveryEscrow ABI: https://markeete.online/abi/DeliveryEscrow.json
 - ProductMetadataRegistry ABI: https://markeete.online/abi/ProductMetadataRegistry.json
 - BaseScan verified source: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e#code
+- BaseScan verified registry source: https://basescan.org/address/0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016#code
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 - Human user guide: https://markeete.online/user-guide.md
 

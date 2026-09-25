@@ -1,6 +1,6 @@
 # Markeete Protocol Whitepaper
 
-Version 1.0 — 25 September 2026
+Version 1.1 — 25 September 2026
 
 ## 1. Summary
 
@@ -17,10 +17,11 @@ The protocol does not observe the physical world. It cannot inspect a product, i
 - Native USDC: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`
 - Treasury: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
 - Guardian: `0xF4EDaee3C9cAcC28E9e2eBCbF60962A8e405992A`
-- Explorer: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e
+- Verified escrow: https://basescan.org/address/0x642da3859deD225Cf42efd21346e317e8e26F58e#code
+- Verified metadata registry: https://basescan.org/address/0xFC707ebB5A9987231e4e1FcA20bB40C2159B4016#code
 - Public ABI: https://markeete.online/abi/DeliveryEscrow.json
 - Registry ABI: https://markeete.online/abi/ProductMetadataRegistry.json
-- BaseScan: matching bytecode and ABI, verified 25 September 2026
+- BaseScan: matching source code and ABI for both contracts, verified 25 September 2026
 - Sourcify: exact creation and runtime bytecode match, verified 25 September 2026
 - Sourcify record: https://sourcify.dev/server/v2/contract/8453/0x642da3859deD225Cf42efd21346e317e8e26F58e?fields=all
 
@@ -75,7 +76,11 @@ May withdraw only `accruedFees`. Contract accounting requires the USDC balance t
 
 ## 5. Product lifecycle
 
-A seller calls `listProduct(price, metadataHash)`. The contract stores the seller, price, bytes32 metadata commitment and status. Human-readable descriptions and images are not stored by the current contract.
+A seller calls `listProduct(price, metadataHash)`. DeliveryEscrow stores the seller, price, bytes32 metadata commitment and status. The seller then calls `ProductMetadataRegistry.publish(productId, metadata)` to store the exact public metadata bytes matching that commitment.
+
+The registry is permanently bound to the canonical escrow. It has no owner, upgrade path, fee, token withdrawal or administrative write function. Only the seller recorded by DeliveryEscrow may publish for a product; metadata is limited to 4,096 bytes and `keccak256(metadata)` must equal the product's current escrow commitment. The registry records the bytes, hash, publication timestamp and incrementing revision.
+
+Clients read `getMetadata(productId)` and independently compare the byte hash, registry hash and current escrow hash. `isCurrent(productId)` provides the same core integrity test on-chain. Integrity proves what bytes the seller committed, not whether the seller's statements are true. See https://markeete.online/technical-reference.md for the complete API, event, metadata schema and validation sequence.
 
 Product states are `None`, `Active`, `Reserved`, `Inactive`, `Sold` and `Lost`. A purchase reserves an active product. A pre-custody cancellation makes it active again. A completed sale makes it sold. A completed return makes it inactive. A courier default after custody makes it lost.
 
